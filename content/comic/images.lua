@@ -7,6 +7,8 @@ end
 local images = 
 {
   fool = new_image('0_the_fool.png'),
+  blotter = new_image('starfield-blotter.png')
+
 }
 
 return images

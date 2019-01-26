@@ -30,11 +30,6 @@ function Game:init ()
 
   print('-- start game --')
 
-  -- load fonts
-  self.small_font = love.graphics.newFont ('data/fonts/lato/Lato-Regular.ttf', 24)
-  self.small_font:setFilter ('linear', 'linear')
-  love.graphics.setFont(self.small_font)
-
   -- load resources
   self.resources = Resources(self.context)
   self.renderer = Renderer(self.context)
@@ -42,8 +37,8 @@ function Game:init ()
 
   -- load scenes
   self.title_screen = TitleScreen(self.context)
-  -- self.title_screen:enter()
 
+  -- self.title_screen:enter()
 
 end
 

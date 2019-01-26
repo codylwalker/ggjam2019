@@ -6,5 +6,6 @@ return library (...,
   'Resources',
   'Renderer',
   'Audio',
-  'TitleScreen'
+  'TitleScreen',
+  'Starfield'
   )
