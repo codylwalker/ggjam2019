@@ -7,5 +7,7 @@ return library (...,
   'Renderer',
   'Audio',
   'TitleScreen',
-  'Starfield'
+  'Starfield',
+  'SystemScreen',
+  'Timer'
   )

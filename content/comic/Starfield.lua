@@ -17,6 +17,7 @@ end
 
 function Starfield:init (parent_ctx)
   self.context = parent_ctx:new(self)
+  self.alpha = 0
   self.star_index = 0
   self.stars = {}
   for i=1, 50 do
@@ -46,22 +47,27 @@ function Starfield:update(dt)
 
 end
 
+local function portrait_stencil ()
+  love.graphics.rectangle("fill", -0.5, -0.75, 1, 1.5)
+end
+
 function Starfield:draw()
-  local function portrait_stencil ()
-    love.graphics.rectangle("fill", -0.5, -0.75, 1, 1.5)
-  end
 
   love.graphics.stencil(portrait_stencil, "replace", 1)
 
   love.graphics.setStencilTest("greater", 0)
-  love.graphics.setPointSize( 2 )
+  love.graphics.setPointSize( 4 )
   local star_points = {}
   for i=1, #self.stars do
     local star = self.stars[i]
     table.insert(star_points, star.position.x)
     table.insert(star_points, star.position.y)
   end
+
+  love.graphics.setColor (1, 1, 1, self.alpha)
+
   love.graphics.points(star_points)
+
 
   love.graphics.setStencilTest()
 

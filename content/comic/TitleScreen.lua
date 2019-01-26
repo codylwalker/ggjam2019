@@ -8,12 +8,50 @@ function TitleScreen:init(parent_ctx)
   self.text_alpha = 0
   self.starfield = Starfield(self.context)
 
+  -- timers
+  self.intro_timer = Timer(self.context, 1)
+  self.title_intro_timer = Timer(self.context, 2)
+  self.title_timer = Timer(self.context, 1)
+  self.title_fade_timer = Timer(self.context, 2)
+  self.starfield_intro_timer = Timer(self.context, 0.1)
+  self.starfield_timer = Timer(self.context, 2)
+
+  self.intro_timer.active = true
+end
+
+
+local function timer_event(end_timer, start_timer)
+  if end_timer.event then
+    end_timer.event = false
+    start_timer.active = true
+  end
 end
 
 function TitleScreen:update(dt)
-  if self.text_alpha < 1 then
-    self.text_alpha = self.text_alpha + dt
+
+  -- timer sequence
+  timer_event(self.intro_timer, self.title_intro_timer)
+  timer_event(self.title_intro_timer, self.title_timer)
+  timer_event(self.title_timer, self.title_fade_timer)
+  timer_event(self.title_fade_timer, self.starfield_intro_timer)
+  timer_event(self.starfield_intro_timer, self.starfield_timer)
+
+-- logic
+  if self.title_intro_timer.active then
+    local alpha = self.text_alpha + dt/self.title_intro_timer.length
+    self.text_alpha = help.clamp(0, alpha, 1)
   end
+
+  if self.title_fade_timer.active then
+    local alpha = self.text_alpha - dt/self.title_fade_timer.length
+    self.text_alpha = help.clamp(0, alpha, 1)
+  end
+
+  if self.starfield_intro_timer.active then
+    local alpha = self.starfield.alpha + dt/self.starfield_intro_timer.length
+    self.starfield.alpha = help.clamp(0, alpha, 1)
+  end
+
   self.starfield:update(dt)
 end
 
@@ -21,24 +59,17 @@ end
 function TitleScreen:draw()
   local renderer = self.context.renderer
 
-  -- love.graphics.setColor(1, 1, 1, self.text_alpha)
+  -- if self.title_intro_timer.active or self.title_timer.active or self.title_fade_timer.active then
+    love.graphics.setColor(1, 1, 1, self.text_alpha)
+    -- renderer:draw_text(tostring(self.text_alpha), self.context.resources.tiny_font, 0, 0.95, 0.2)
+    renderer:draw_text('HEART IN STASIS', self.context.resources.tiny_font, 0, 0.95, 0.2)
+    love.graphics.setColor(1, 1, 1, 1)
+  -- end
 
-  love.graphics.setColor(1, 1, 1, 1-self.text_alpha)
-  renderer:draw_text('HYPERSPACE', self.context.resources.tiny_font, 0, 0.95, 0.2)
+  -- if self.starfield_timer.active then
+    self.starfield:draw()
+  -- end
 
-  love.graphics.setColor(1, 1, 1, self.text_alpha)
-
-  self.starfield:draw()
-
-
-  -- love.graphics.setColor(1, 1, 1, 1)
-  -- love.graphics.rectangle("fill", 0, 0, 1, 1)
-  -- love.graphics.rectangle("fill", 10, 100, 100, 100)
-
-
-end
-
-function TitleScreen:enter()
 end
 
 function TitleScreen:mouse_pressed(x,y)
