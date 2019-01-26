@@ -13,7 +13,7 @@ function TitleScreen:init(parent_ctx)
   self.title_intro_timer = Timer(self.context, 2)
   self.title_timer = Timer(self.context, 1)
   self.title_fade_timer = Timer(self.context, 2)
-  self.starfield_intro_timer = Timer(self.context, 0.1)
+  self.starfield_intro_timer = Timer(self.context, 0.5)
   self.starfield_timer = Timer(self.context, 2)
 
   self.intro_timer.active = true

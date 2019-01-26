@@ -28,7 +28,7 @@ function Game:init ()
   self.app = App ()
   self.context = self.app.context:new (self)
 
-  print('-- start game --')
+  print('-- - --')
   love.mouse.setVisible(false)
 
   -- load resources
@@ -39,8 +39,11 @@ function Game:init ()
   -- load scenes
   self.title_screen = TitleScreen(self.context)
   self.title_screen_active = true
+  -- self.title_screen_active = false
   self.system_screen = SystemScreen(self.context)
+  -- self.system_screen_active = true
   self.system_screen_active = false
+
 
 end
 
@@ -122,12 +125,16 @@ function Game:convert_screen_to_world(x, y)
 end
 
 function Game.listens:update(dt)
+
+  love.graphics.setBackgroundColor(0.65, 0.64, 0.70)
+
   if self.title_screen_active then
     self.title_screen:update(dt)
   end
   if self.system_screen_active then
     self.system_screen:update(dt)
   end
+
 
 end
 
@@ -149,11 +156,13 @@ function Game:_draw ()
   if self.title_screen_active then
     self.title_screen:draw()
   end
+
   if self.system_screen_active then
     self.system_screen:draw()
   end
 
   love.graphics.pop ()
+
 
 
   -- self:draw_fps()

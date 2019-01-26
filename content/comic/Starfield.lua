@@ -48,10 +48,22 @@ function Starfield:update(dt)
 end
 
 local function portrait_stencil ()
-  love.graphics.rectangle("fill", -0.5, -0.75, 1, 1.5)
+  -- love.graphics.rectangle("fill", -0.5, -0.75, 1, 1.5)
+  love.graphics.rectangle("fill", -0.25, -0.5, 1.5, 1.75)
 end
 
 function Starfield:draw()
+
+  love.graphics.push()
+  love.graphics.reset()
+
+  local x, y = love.graphics.getDimensions ()
+  local offset = Vec2(x*0.5-250, y*0.5-375)
+  love.graphics.setColor(0.36, 0.30, 0.31, self.alpha)
+  love.graphics.rectangle("fill", offset.x, offset.y, 500, 750)
+
+  love.graphics.pop()
+
 
   love.graphics.stencil(portrait_stencil, "replace", 1)
 
@@ -78,8 +90,7 @@ function Starfield:draw()
   local x, y = love.graphics.getDimensions ()
   local offset = Vec2(x*0.5-250, y*0.5-375)
 
-
-  love.graphics.setColor (1, 1, 1, 0.97)
+  love.graphics.setColor (1, 1, 1, self.alpha)
   local blotter = self.context.resources.images.blotter
 
   love.graphics.draw(blotter, offset.x, offset.y)
