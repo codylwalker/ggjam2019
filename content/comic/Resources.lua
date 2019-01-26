@@ -16,6 +16,11 @@ function Resources:init(parent_ctx)
   -- graphics
   self.images = require 'comic.images'
   self.white_pixel = love.graphics.newImage (love.image.newImageData (1, 1, 'rgba8', '\255\255\255\255'))
+  self.text_shader = love.graphics.newShader ('data/shaders/text_shader.glsl')
+
+  -- fonts
+  self.tiny_font = love.graphics.newFont ('data/fonts/lato/Lato-Regular.ttf', 128)
+
 end
 
 

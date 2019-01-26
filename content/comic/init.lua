@@ -4,4 +4,7 @@ return library (...,
   'App',
   'Game',
   'Resources',
-  'Audio')
+  'Renderer',
+  'Audio',
+  'TitleScreen'
+  )

@@ -15,6 +15,10 @@ function Game.provides:audio()
   return self.audio
 end
 
+function Game.provides:renderer()
+  return self.renderer
+end
+
 function Game.get:is_portrait()
   local width, height = love.graphics.getDimensions()
   return width < height
@@ -33,8 +37,14 @@ function Game:init ()
 
   -- load resources
   self.resources = Resources(self.context)
-
+  self.renderer = Renderer(self.context)
   self.audio = Audio(self.context)
+
+  -- load scenes
+  self.title_screen = TitleScreen(self.context)
+  -- self.title_screen:enter()
+
+
 end
 
 
@@ -115,6 +125,7 @@ function Game:convert_screen_to_world(x, y)
 end
 
 function Game.listens:update(dt)
+  self.title_screen:update(dt)
 end
 
 
@@ -132,6 +143,7 @@ function Game:_draw ()
   love.graphics.scale (scale, -scale)
   love.graphics.setLineWidth (1/scale)
 
+  self.title_screen:draw()
   love.graphics.pop ()
 
 
@@ -163,7 +175,7 @@ function Game.listens:keypressed (key, scancode, is_repeat)
   -- quit
   elseif key == 'escape' then
       love.event.quit()
--- f4: save screenshot
+  -- f4: save screenshot
   elseif key == 'f4' then
     -- use the date & time as the screenshot file name
     local file_name = os.date('%Y-%m-%d (%Hh %Mm %Ss)')
