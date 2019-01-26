@@ -48,8 +48,8 @@ function Starfield:update(dt)
 end
 
 local function portrait_stencil ()
-  -- love.graphics.rectangle("fill", -0.5, -0.75, 1, 1.5)
-  love.graphics.rectangle("fill", -0.25, -0.5, 1.5, 1.75)
+  love.graphics.rectangle("fill", -0.5, -0.75, 1, 1.5)
+  -- love.graphics.rectangle("fill", -0.25, -0.5, 1.5, 1.75)
 end
 
 function Starfield:draw()
