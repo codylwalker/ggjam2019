@@ -38,11 +38,11 @@ function Game:init ()
 
   -- load scenes
   self.title_screen = TitleScreen(self.context)
-  self.title_screen_active = true
-  -- self.title_screen_active = false
+  -- self.title_screen_active = true
+  self.title_screen_active = false
   self.system_screen = SystemScreen(self.context)
-  -- self.system_screen_active = true
-  self.system_screen_active = false
+  self.system_screen_active = true
+  -- self.system_screen_active = false
 
 
 end
@@ -178,6 +178,9 @@ function Game.listens:mousemoved (x, y, dx, dy, is_touch)
 end
 
 function Game.listens:mousepressed (x, y, button, is_touch)
+  if self.title_screen_active then
+    self.title_screen:mouse_pressed(x, y)
+  end
 end
 
 function Game.listens:mousereleased (x, y, button, is_touch)

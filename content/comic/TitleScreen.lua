@@ -57,7 +57,17 @@ function TitleScreen:update(dt)
     self.starfield.alpha = help.clamp(0, alpha, 1)
   end
 
+
   self.starfield:update(dt)
+
+end
+
+function TitleScreen:check_complete()
+print"test"
+  if self.starfield_timer.complete then
+    self.context.game.title_screen_active = false
+    self.context.game.system_screen_active = true
+  end
 end
 
 
@@ -77,11 +87,13 @@ function TitleScreen:draw()
 
 end
 
-function TitleScreen:mouse_pressed(x,y)
+function TitleScreen:mouse_pressed(x,y, button)
+  self:check_complete()
 end
 
 function TitleScreen:key_pressed(key)
   if key == 'space' then
+  self:check_complete()
     -- advance?
   end
 end
