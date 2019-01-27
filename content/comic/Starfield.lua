@@ -48,14 +48,6 @@ function Starfield:update(dt)
 end
 
 
-local function convert_world_to_screen(x, y)
-  local w, h = love.graphics.getDimensions ()
-  x = (x * 1920) / w
-  y = (y * 1080) / h
-  return x, y
-end
-
-
 function Starfield:draw()
 
   love.graphics.push()
@@ -66,14 +58,17 @@ function Starfield:draw()
   love.graphics.setColor(0.36, 0.30, 0.31, self.alpha)
   love.graphics.rectangle("fill", offset.x, offset.y, 500, 750)
 
-  love.graphics.pop()
 
-  local x1,y1 = convert_world_to_screen (-0.52, -0.8)
-  local x2,y2 = convert_world_to_screen (1.04, 1.6)
+  local x1,y1 = offset.x, offset.y
+  local x2,y2 = 500, 750
+
+
 
   love.graphics.stencil(function ()
+    -- love.graphics.rectangle("fill", x1, y1, x2, y2)
     love.graphics.rectangle("fill", x1, y1, x2, y2)
 			end, "replace", 1)
+
 
   love.graphics.setStencilTest("greater", 0)
 
@@ -85,11 +80,10 @@ function Starfield:draw()
     table.insert(star_points, star.position.y)
   end
 
-  love.graphics.setColor (1, 1, 1, -1 + self.alpha*2)
+  love.graphics.setColor (1, 1, 1, -2 + self.alpha*3)
 
+  love.graphics.pop()
   love.graphics.points(star_points)
-
-
   love.graphics.setStencilTest()
 
   -- draw blotter
