@@ -12,7 +12,7 @@ function TitleScreen:init(parent_ctx)
   self.starfield = Starfield(self.context)
 
   -- timers
-  self.intro_timer = Timer(self.context, 0)
+  self.intro_timer = Timer(self.context, 3)
   self.title_intro_timer = Timer(self.context, 2)
   self.title_timer = Timer(self.context, 1.5)
   self.title_fade_timer = Timer(self.context, 2)
@@ -98,7 +98,7 @@ function TitleScreen:draw()
   local w, h = love.graphics.getDimensions ()
   local scale = w/1920
 
-  local offset = convert_world_to_screen(Vec2(238, 161))
+  local offset = convert_world_to_screen(Vec2(238, 45))
   offset = Vec2(w/2, h/2) - offset -- center
 
   love.graphics.setColor(1, 1, 1, self.title_alpha)

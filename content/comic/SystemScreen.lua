@@ -24,8 +24,8 @@ function SystemScreen:update(dt)
   end
 
   if self.error_timer.active then
-    local frame = 8-math.floor((self.error_timer.value/self.error_timer.length)*7)
-      self.error_panel = self.context.resources.images.error_panel[frame]
+    local frame = 9-math.floor((self.error_timer.value/self.error_timer.length)*8)
+    self.error_panel = self.context.resources.images.error_panel[frame]
   end
 
 end
