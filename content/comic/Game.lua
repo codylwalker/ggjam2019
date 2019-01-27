@@ -38,11 +38,11 @@ function Game:init ()
 
   -- load scenes
   self.title_screen = TitleScreen(self.context)
-  -- self.title_screen_active = true
-  self.title_screen_active = false
   self.system_screen = SystemScreen(self.context)
-  self.system_screen_active = true
-  -- self.system_screen_active = false
+  self.title_screen_active = true
+  -- self.title_screen_active = false
+  -- self.system_screen_active = true
+  self.system_screen_active = false
 
 
 end

@@ -5,18 +5,21 @@ local TitleScreen = class 'TitleScreen'
 
 function TitleScreen:init(parent_ctx)
   self.context = parent_ctx:new(self)
-  self.text_alpha = 0
+  self.title_alpha = 0
+  self.title_count = 0.35
+  self.title_index = 1
+  self.title = self.context.resources.images.title[1]
   self.starfield = Starfield(self.context)
 
   -- timers
-  -- self.intro_timer = Timer(self.context, 3)
-  -- self.title_intro_timer = Timer(self.context, 2)
-  -- self.title_timer = Timer(self.context, 1.5)
-  -- self.title_fade_timer = Timer(self.context, 2)
   self.intro_timer = Timer(self.context, 0)
-  self.title_intro_timer = Timer(self.context, 0)
-  self.title_timer = Timer(self.context, 0)
-  self.title_fade_timer = Timer(self.context, 0)
+  self.title_intro_timer = Timer(self.context, 2)
+  self.title_timer = Timer(self.context, 1.5)
+  self.title_fade_timer = Timer(self.context, 2)
+  -- self.intro_timer = Timer(self.context, 0)
+  -- self.title_intro_timer = Timer(self.context, 0)
+  -- self.title_timer = Timer(self.context, 0)
+  -- self.title_fade_timer = Timer(self.context, 0)
 
   self.starfield_intro_timer = Timer(self.context, 4)
   self.starfield_timer = Timer(self.context, 2)
@@ -43,13 +46,13 @@ function TitleScreen:update(dt)
 
   -- fade with timers
   if self.title_intro_timer.active then
-    local alpha = self.text_alpha + dt/self.title_intro_timer.length
-    self.text_alpha = help.clamp(0, alpha, 1)
+    local alpha = self.title_alpha + dt/self.title_intro_timer.length
+    self.title_alpha = help.clamp(0, alpha, 1)
   end
 
   if self.title_fade_timer.active then
-    local alpha = self.text_alpha - dt/self.title_fade_timer.length
-    self.text_alpha = help.clamp(0, alpha, 1)
+    local alpha = self.title_alpha - dt/self.title_fade_timer.length
+    self.title_alpha = help.clamp(0, alpha, 1)
   end
 
   if self.starfield_intro_timer.active then
@@ -58,12 +61,20 @@ function TitleScreen:update(dt)
   end
 
 
+  self.title_count = self.title_count - dt
+  if self.title_count <= 0 then
+    self.title_count = 0.35
+    self.title_index = (self.title_index + 1)%3 + 1
+    self.title = self.context.resources.images.title[self.title_index]
+  end
+
+
+
   self.starfield:update(dt)
 
 end
 
 function TitleScreen:check_complete()
-print"test"
   if self.starfield_timer.complete then
     self.context.game.title_screen_active = false
     self.context.game.system_screen_active = true
@@ -71,13 +82,31 @@ print"test"
 end
 
 
-function TitleScreen:draw()
-  local renderer = self.context.renderer
+local function convert_world_to_screen(vec)
+  local x, y = vec.x, vec.y
+  local w, h = love.graphics.getDimensions ()
+  x = (x * w) /(1920)
+  y = (y * h) /(1080)
+  return Vec2(x, y)
+end
 
-  -- if self.title_intro_timer.active or self.title_timer.active or self.title_fade_timer.active then
-    love.graphics.setColor(1, 1, 1, self.text_alpha)
-    -- renderer:draw_text(tostring(self.text_alpha), self.context.resources.tiny_font, 0, 0.95, 0.2)
-    renderer:draw_text('HEART IN STASIS', self.context.resources.tiny_font, 0, 0.95, 0.2)
+function TitleScreen:draw()
+  -- draw title
+  love.graphics.push()
+  love.graphics.reset()
+
+  local w, h = love.graphics.getDimensions ()
+  local scale = w/1920
+
+  local offset = convert_world_to_screen(Vec2(238, 161))
+  offset = Vec2(w/2, h/2) - offset -- center
+
+  love.graphics.setColor(1, 1, 1, self.title_alpha)
+
+  love.graphics.draw(self.title, offset.x, offset.y, 0, scale, scale)
+
+  love.graphics.pop()
+
     love.graphics.setColor(1, 1, 1, 1)
   -- end
 

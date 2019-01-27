@@ -7,8 +7,9 @@ function SystemScreen:init(parent_ctx)
   self.context = parent_ctx:new(self)
 
   self.intro_timer = Timer(self.context, 0)
-  self.intro_timer.active = true
   self.error_timer = Timer(self.context, 4)
+  self.intro_timer.active = true
+
   self.show_error = false
   self.error_panel = self.context.resources.images.error_panel[1]
 
@@ -17,7 +18,6 @@ end
 function SystemScreen:update(dt)
 
   if self.intro_timer.event then
-print"done"
       self.intro_timer.event = false
       self.error_timer.active = true
       self.show_error = true
@@ -27,7 +27,6 @@ print"done"
     local frame = 8-math.floor((self.error_timer.value/self.error_timer.length)*7)
       self.error_panel = self.context.resources.images.error_panel[frame]
   end
-
 
 end
 
