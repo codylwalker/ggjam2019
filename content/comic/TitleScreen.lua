@@ -9,11 +9,16 @@ function TitleScreen:init(parent_ctx)
   self.starfield = Starfield(self.context)
 
   -- timers
-  self.intro_timer = Timer(self.context, 1)
+  self.intro_timer = Timer(self.context, 3)
   self.title_intro_timer = Timer(self.context, 2)
-  self.title_timer = Timer(self.context, 1)
+  self.title_timer = Timer(self.context, 1.5)
   self.title_fade_timer = Timer(self.context, 2)
-  self.starfield_intro_timer = Timer(self.context, 0.5)
+  -- self.intro_timer = Timer(self.context, 0)
+  -- self.title_intro_timer = Timer(self.context, 0)
+  -- self.title_timer = Timer(self.context, 0)
+  -- self.title_fade_timer = Timer(self.context, 0)
+
+  self.starfield_intro_timer = Timer(self.context, 4)
   self.starfield_timer = Timer(self.context, 2)
 
   self.intro_timer.active = true
@@ -36,7 +41,7 @@ function TitleScreen:update(dt)
   timer_event(self.title_fade_timer, self.starfield_intro_timer)
   timer_event(self.starfield_intro_timer, self.starfield_timer)
 
--- logic
+  -- fade with timers
   if self.title_intro_timer.active then
     local alpha = self.text_alpha + dt/self.title_intro_timer.length
     self.text_alpha = help.clamp(0, alpha, 1)
