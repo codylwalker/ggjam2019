@@ -23,9 +23,11 @@ function UiScreen:init(parent_ctx)
   self.dance_intro_timer = Timer(self.context, 3)
   self.dance_async_timer = Timer(self.context, 3)
   self.dance_sync_timer = Timer(self.context, 5)
-  self.outro_timer = Timer(self.context, 12)
-  self.credits_timer = Timer(self.context, 5)
-  self.quit_timer = Timer(self.context, 4)
+  self.outro_timer = Timer(self.context, 7)
+  self.credits_intro_timer = Timer(self.context, 5)
+  self.credits_timer = Timer(self.context, 4)
+  self.credits_fade_timer = Timer(self.context, 4)
+  self.quit_timer = Timer(self.context, 2.75)
 
   self.intro_timer.active = true
 
@@ -66,17 +68,33 @@ function UiScreen:advance()
     return
   end
 
-  if self.outro_timer.complete then
+  if self.frame == 6 and self.outro_timer.complete then
     self.frame = 7
-    self.credits_timer.active = true
+    self.credits_intro_timer.active = true
+    return
   end
 
-  if self.quit_timer.complete then
-    love.event.quit()
+  if self.frame == 7 then
+    self.frame = 8
+    return
   end
 
+  if self.frame == 8 then
+    self.frame = 9
+    self.quit_timer.active = true
+    return
+  end
 end
 
+
+local function scatter ()
+  local x, y
+  local w, h = love.graphics.getDimensions ()
+  -- randomize magnitudes
+  x = (0.5*w) - (math.random()-0.5)*w*0.5
+  y = (0.5*h) - (math.random()-0.5)*h*0.65
+  return Vec2(x, y)
+end
 
 function UiScreen:update(dt)
   self.count = self.count + dt
@@ -102,8 +120,8 @@ function UiScreen:update(dt)
   end
 
   if self.scan_timer.active then
-    local frame = 8-math.ceil((self.scan_timer.value/self.scan_timer.length)*7)
-    self.scan_img = self.context.resources.images.ui_scan[frame]
+    local index = 8-math.ceil((self.scan_timer.value/self.scan_timer.length)*7)
+    self.scan_img = self.context.resources.images.ui_scan[index]
   end
   if self.scan_timer.event then 
     self.scan_timer.event = false
@@ -148,42 +166,68 @@ function UiScreen:update(dt)
     self.outro_timer.active = true
   end
 
+  local pulse = 1.5
   if self.frame == 6 then
     self.display_alpha = help.clamp(0, self.display_alpha + dt * 0.3, 1)
     self.ui_main_alpha = help.clamp(0, self.ui_main_alpha+dt*0.3, 1)
 
-    if self.count < 1.5 then 
+    if self.count < pulse then 
       self.ui_img = self.context.resources.images.ui_sync[1]
-    elseif self.count < 3 then
+    elseif self.count < (2*pulse) then
       self.ui_img = self.context.resources.images.ui_sync[2]
-    elseif self.count < 4.5 then
+    elseif self.count < (2*pulse) then
       self.ui_img = self.context.resources.images.ui_sync[3]
-    elseif self.count < 6 then
+    elseif self.count < (3*pulse) then
       self.ui_img = self.context.resources.images.ui_sync[4]
     else
       self.count = 0
-      -- randomize position
+
       self.ui_img = self.context.resources.images.ui_sync[1]
-      local w, h = love.graphics.getDimensions ()
-      local ui_display_offset = convert_world_to_screen(Vec2(190, 275))
-      self.ui_display_pos = Vec2(math.random()*w, math.random()*h) - ui_display_offset
+      local ui_display_offset = convert_world_to_screen(Vec2(190, 175))
+      self.ui_display_pos = scatter() - ui_display_offset
     end
   end
 
   if self.frame == 7 then
     self.display_alpha = help.clamp(0, self.display_alpha - dt * 0.3, 1)
     self.ui_main_alpha = help.clamp(0, self.ui_main_alpha-dt*0.3, 1)
-    if self.credits_timer.complete then
-      self.credits_alpha = help.clamp(0, self.credits_alpha+dt*0.3, 1)
-    end
   end
+
+
+  if self.frame == 8 then
+      self.credits_alpha = help.clamp(0, self.credits_alpha+dt*0.3, 1)
+  end
+  if self.frame == 9 then
+      self.credits_alpha = help.clamp(0, self.credits_alpha-dt*0.5, 1)
+      local t = self.context.game.title_screen
+      t.music_fade = help.clamp(0, t.music_fade - dt, 1)
+      t.music_source:setVolume(t.music_fade)
+  end
+
+  if self.credits_intro_timer.event then
+      self.credits_intro_timer.event = false
+      self.frame = 8
+      self.credits_timer.active = true
+    end
+
 
   if self.credits_timer.event then
     self.credits_timer.event = false
-    self.quit_timer.active = true
+    self.credits_fade_timer.active = true
+  end
+
+  if self.credits_fade_timer.event then
+    self.credits_fade_timer.event = false
+      self.frame = 9
+      self.quit_timer.active = true
+    end
+
+  if self.quit_timer.event then
+    love.event.quit()
   end
 
 end
+
 
 
 function UiScreen:mouse_pressed(x,y, button)
@@ -198,6 +242,13 @@ function UiScreen:draw()
   love.graphics.push()
   love.graphics.reset()
 
+  -- ui display
+  if self.frame <= 9 then
+    love.graphics.setColor (1, 1, 1, self.display_alpha)
+    love.graphics.draw(self.ui_img, self.ui_display_pos.x, self.ui_display_pos.y, 0, scale, scale)
+  end
+
+
   -- ui main
     if self.frame < 6 then
       love.graphics.setColor (1, 1, 1, self.ui_main_alpha)
@@ -206,15 +257,14 @@ function UiScreen:draw()
       ui_main_offset = Vec2(w/2, h/2) - ui_main_offset
       love.graphics.draw(ui_main, ui_main_offset.x, ui_main_offset.y, 0, scale, scale)
     end
+
    if self.frame == 6 or self.frame == 7 then
       love.graphics.setColor (1, 1, 1, self.ui_main_alpha)
       local ui_main = self.context.resources.images.ui_main_sync
       love.graphics.draw(ui_main, 0, 0, 0, scale, scale)
     end
 
-  -- ui display
-    love.graphics.setColor (1, 1, 1, self.display_alpha)
-    love.graphics.draw(self.ui_img, self.ui_display_pos.x, self.ui_display_pos.y, 0, scale, scale)
+
 
   -- scan
   if self.frame == 3 or self.frame == 4 then
@@ -225,7 +275,7 @@ function UiScreen:draw()
   end
 
   -- credits
-  if self.frame == 7 then
+  if self.frame >= 7 then
       love.graphics.setColor (1, 1, 1, self.credits_alpha)
       local credits = self.context.resources.images.credits
       local credits_offset = convert_world_to_screen(Vec2(273, 158.5))

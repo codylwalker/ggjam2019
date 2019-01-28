@@ -12,20 +12,26 @@ function TitleScreen:init(parent_ctx)
   self.starfield = Starfield(self.context)
 
   -- timers
-  self.intro_timer = Timer(self.context, 3)
-  self.title_intro_timer = Timer(self.context, 2)
-  self.title_timer = Timer(self.context, 1.5)
-  self.title_fade_timer = Timer(self.context, 2)
+  self.intro_timer = Timer(self.context, 3.5)
+  self.title_intro_timer = Timer(self.context, 1.85)
+  self.title_timer = Timer(self.context, 4.75)
+  self.title_fade_timer = Timer(self.context, 1.85)
   -- self.intro_timer = Timer(self.context, 0)
   -- self.title_intro_timer = Timer(self.context, 0)
   -- self.title_timer = Timer(self.context, 0)
   -- self.title_fade_timer = Timer(self.context, 0)
 
   self.starfield_intro_timer = Timer(self.context, 4)
-  self.starfield_timer = Timer(self.context, 2)
+  self.starfield_timer = Timer(self.context, 0.5)
 
   self.intro_timer.active = true
-  self.context.audio:play_next_music()
+  -- self.context.audio:play_next_music()
+
+  self.music_source = self.context.resources.sounds.ambient[1].source
+  self.music_source:setVolume(0)
+  self.music_source:setLooping(true)
+  self.music_source:play()
+  self.music_fade = 0
 
 end
 
@@ -38,6 +44,8 @@ local function timer_event(end_timer, start_timer)
 end
 
 function TitleScreen:update(dt)
+  self.music_fade = help.clamp(0, self.music_fade + dt*0.077, 1)
+  self.music_source:setVolume(self.music_fade)
 
   -- timer sequence
   timer_event(self.intro_timer, self.title_intro_timer)
@@ -80,6 +88,7 @@ function TitleScreen:check_complete()
   if self.starfield_timer.complete then
     self.context.game.title_screen_active = false
     self.context.game.system_screen_active = true
+    self.context.game.system_screen.error_timer.active = true
   end
 end
 

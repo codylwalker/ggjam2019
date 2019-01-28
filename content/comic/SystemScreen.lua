@@ -6,31 +6,32 @@ local SystemScreen = class 'SystemScreen'
 function SystemScreen:init(parent_ctx)
   self.context = parent_ctx:new(self)
 
-  self.intro_timer = Timer(self.context, 0)
-  self.error_timer = Timer(self.context, 4)
-  self.end_timer = Timer(self.context, 3)
+  self.error_timer = Timer(self.context, 3)
+  self.end_timer = Timer(self.context, 0)
 
-  self.intro_timer.active = true
 
   self.error_panel = self.context.resources.images.error_panel[1]
 
   self.frame = 0
+  self.can_advance = false
+
 
 end
 
 function SystemScreen:update(dt)
 
-  if self.intro_timer.event then
-      self.intro_timer.event = false
-      self.error_timer.active = true
-  end
-
   if self.error_timer.active then
-    local frame = 9-math.floor((self.error_timer.value/self.error_timer.length)*8)
+    local frame = 9-math.ceil((self.error_timer.value/self.error_timer.length)*8)
     self.error_panel = self.context.resources.images.error_panel[frame]
   end
 
+  if self.error_timer.event then
+      self.error_timer.event = false
+      self.can_advance = true
+  end
+
   if self.end_timer.event then
+      self.end_timer.event = false
       self.context.game.system_screen_active = false
       self.context.game.ui_screen_active = true
   end
@@ -51,6 +52,7 @@ function SystemScreen:mouse_pressed(x,y, button)
 end
 
 function SystemScreen:advance()
+  if not self.can_advance then return end
   self.frame = self.frame + 1
 
   if self.frame == 5 then
