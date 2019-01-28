@@ -23,7 +23,7 @@ local sounds =
 {
   -- ambient
   ambient = {
-    new_music('rain.mp3', 1, 1),
+    new_music('ambient.ogg', 1, 1),
     },
 
   -- sfx

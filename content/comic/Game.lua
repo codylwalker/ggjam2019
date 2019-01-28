@@ -28,7 +28,7 @@ function Game:init ()
   self.app = App ()
   self.context = self.app.context:new (self)
 
-  print('-- - --')
+  print('-- the dance --')
   love.mouse.setVisible(false)
 
   -- load resources
@@ -39,10 +39,13 @@ function Game:init ()
   -- load scenes
   self.title_screen = TitleScreen(self.context)
   self.system_screen = SystemScreen(self.context)
+  self.ui_screen = UiScreen(self.context)
   self.title_screen_active = true
-  -- self.title_screen_active = false
   -- self.system_screen_active = true
+  -- self.ui_screen_active = true
+  -- self.title_screen_active = false
   self.system_screen_active = false
+  self.ui_screen_active = false
 
 
 end
@@ -134,6 +137,9 @@ function Game.listens:update(dt)
   if self.system_screen_active then
     self.system_screen:update(dt)
   end
+  if self.ui_screen_active then
+    self.ui_screen:update(dt)
+  end
 
 
 end
@@ -161,6 +167,11 @@ function Game:_draw ()
     self.system_screen:draw()
   end
 
+  if self.ui_screen_active then
+    self.ui_screen:draw()
+  end
+
+
   love.graphics.pop ()
 
 
@@ -181,6 +192,15 @@ function Game.listens:mousepressed (x, y, button, is_touch)
   if self.title_screen_active then
     self.title_screen:mouse_pressed(x, y)
   end
+
+  if self.system_screen_active then
+    self.system_screen:mouse_pressed(x, y)
+  end
+
+  if self.ui_screen_active then
+    self.ui_screen:mouse_pressed(x, y)
+  end
+
 end
 
 function Game.listens:mousereleased (x, y, button, is_touch)

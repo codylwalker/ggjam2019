@@ -25,6 +25,8 @@ function TitleScreen:init(parent_ctx)
   self.starfield_timer = Timer(self.context, 2)
 
   self.intro_timer.active = true
+  self.context.audio:play_next_music()
+
 end
 
 

@@ -66,7 +66,7 @@ function Starfield:draw()
 
   love.graphics.stencil(function ()
     -- love.graphics.rectangle("fill", x1, y1, x2, y2)
-    love.graphics.rectangle("fill", x1, y1, x2, y2)
+    love.graphics.rectangle("fill", x1+5, y1+5, x2-10, y2-10)
 			end, "replace", 1)
 
 
@@ -89,9 +89,6 @@ function Starfield:draw()
   -- draw blotter
   love.graphics.push()
   love.graphics.reset()
-
-  local x, y = love.graphics.getDimensions ()
-  local offset = Vec2(x*0.5-250, y*0.5-375)
 
   love.graphics.setColor (1, 1, 1, self.alpha)
 

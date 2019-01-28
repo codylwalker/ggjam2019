@@ -6,8 +6,9 @@ return library (...,
   'Resources',
   'Renderer',
   'Audio',
+  'Timer',
   'TitleScreen',
   'Starfield',
   'SystemScreen',
-  'Timer'
+  'UiScreen'
   )
